@@ -26,6 +26,7 @@ app.use(express.json());
 
 // Rutas principales
 app.use('/libros', librosRouter);
+app.use('/login', loginRouter);
 
 // Exporta la instancia de la aplicación para ser utilizada en otros módulos
 module.exports = app;
