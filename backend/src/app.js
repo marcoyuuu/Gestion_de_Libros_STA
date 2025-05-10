@@ -24,5 +24,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Rutas principales
+app.use('/libros', librosRouter);
+
 // Exporta la instancia de la aplicación para ser utilizada en otros módulos
 module.exports = app;
