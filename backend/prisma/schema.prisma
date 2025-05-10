@@ -1,15 +1,36 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+/// Archivo: schema.prisma
+/// Descripción: Esquema principal de la base de datos para el sistema de gestión de libros.
+/// Define los modelos y relaciones principales usando Prisma ORM.
+/// Base de datos: SQLite (configurable mediante variable de entorno DATABASE_URL)
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+/// Modelo que representa a los autores de libros.
+/// Cada autor puede tener múltiples libros asociados.
+model Autor {
+  id     Int     @id @default(autoincrement()) // Identificador único del autor (clave primaria)
+  email  String  @unique                      // Correo electrónico único del autor
+  nombre String                              // Nombre completo del autor
+
+  libros Libro[]                             // Relación uno a muchos con Libro
+}
+
+/// Modelo que representa los libros en el sistema.
+/// Cada libro pertenece a un autor.
+model Libro {
+  id         Int      @id @default(autoincrement()) // Identificador único del libro (clave primaria)
+  titulo     String                                // Título del libro
+  genero     String                                // Género literario
+  valoracion Int                                   // Valoración numérica del libro
+  autorId    Int                                   // Clave foránea al modelo Autor
+  autor      Autor    @relation(fields: [autorId], references: [id]) // Relación con Autor
+  createdAt  DateTime @default(now())              // Fecha de creación del registro
+  updatedAt  DateTime @updatedAt                   // Fecha de última actualización
 }
