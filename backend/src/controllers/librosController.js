@@ -18,6 +18,8 @@ const prisma = new PrismaClient(); // Crea una nueva instancia de PrismaClient p
  */
 exports.getAllLibros = async (_req, res) => {
   try {
+    // Simula error para tests
+    if (_req.query.errorSimulate) throw new Error('Error simulado');
     const libros = await prisma.libro.findMany({ include: { autor: true } });
     if (!libros || libros.length === 0) {
       return res.status(404).json({ error: 'No se encontraron libros' });
@@ -37,7 +39,14 @@ exports.getAllLibros = async (_req, res) => {
  */
 exports.createLibro = async (req, res) => {
   try {
+    // Simula error para tests
+    if (req.query.errorSimulate) throw new Error('Error simulado');
+    
     const { titulo, genero, valoracion, autorId } = req.body;
+    // Validación de campos requeridos
+    if (!titulo || !genero || typeof valoracion !== 'number' || !autorId) {
+      return res.status(400).json({ error: 'Faltan campos requeridos: titulo, genero, valoracion, autorId' });
+    }
     const nuevo = await prisma.libro.create({
       data: { titulo, genero, valoracion, autorId }
     });
@@ -56,6 +65,8 @@ exports.createLibro = async (req, res) => {
  */
 exports.getLibroById = async (req, res) => {
   try {
+    // Simula error para tests
+    if (req.query.errorSimulate) throw new Error('Error simulado');
     const libro = await prisma.libro.findUnique({
       where: { id: parseInt(req.params.id) },
       include: { autor: true },
@@ -76,6 +87,8 @@ exports.getLibroById = async (req, res) => {
  */
 exports.updateLibro = async (req, res) => {
   try {
+    // Simula error para tests
+    if (req.query.errorSimulate) throw new Error('Error simulado');
     const { titulo, genero, valoracion } = req.body;
     const updated = await prisma.libro.update({
       where: { id: parseInt(req.params.id) },
@@ -100,6 +113,8 @@ exports.updateLibro = async (req, res) => {
  */
 exports.deleteLibro = async (req, res) => {
   try {
+    // Simula error para tests
+    if (req.query.errorSimulate) throw new Error('Error simulado');
     await prisma.libro.delete({ where: { id: parseInt(req.params.id) } });
     res.status(204).send();
   } catch (error) {
