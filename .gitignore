@@ -1,0 +1,5 @@
+# Ignora la carpeta node_modules, que contiene dependencias instaladas por npm/
+node_modules
+
+# Ignora archivos de variables de entorno para mantener seguras las credenciales y configuraciones sensibles
+.env
