@@ -28,5 +28,9 @@ app.use(express.json());
 app.use('/libros', librosRouter);
 app.use('/login', loginRouter);
 
+// Middleware de manejo de errores global
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);
+
 // Exporta la instancia de la aplicación para ser utilizada en otros módulos
 module.exports = app;
