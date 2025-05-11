@@ -1,14 +1,22 @@
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function SettingsScreen() {
+  // Aquí podrías obtener el email del usuario autenticado
+  const userEmail = 'usuario@ejemplo.com'; // Simulado
 
-export default function TabTwoScreen() {
+  const handleLogout = () => {
+    // Lógica para cerrar sesión
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+      <Text style={styles.title}>Configuración</Text>
+      <View style={styles.section}>
+        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.value}>{userEmail}</Text>
+      </View>
+      <Button title="Cerrar sesión" color="#d32f2f" onPress={handleLogout} />
     </View>
   );
 }
@@ -16,16 +24,27 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    padding: 24,
+    backgroundColor: '#fff',
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 32,
+    textAlign: 'center',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  section: {
+    marginBottom: 32,
+    alignItems: 'center',
+  },
+  label: {
+    fontSize: 16,
+    color: '#888',
+  },
+  value: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 4,
   },
 });

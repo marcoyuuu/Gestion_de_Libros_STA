@@ -1,14 +1,50 @@
-import { StyleSheet } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
 
-export default function TabOneScreen() {
+import React from 'react';
+import { useRouter } from 'expo-router';
+import { StyleSheet, View, FlatList, Button, Text, TouchableOpacity } from 'react-native';
+
+export default function HomeScreen() {
+  const router = useRouter();
+  // books: array de libros (simulado)
+  const books = [
+    { id: '1', title: 'Cien Años de Soledad', genre: 'Realismo Mágico', rating: 5, author: 'Gabriel García Márquez' },
+    { id: '2', title: 'Don Quijote', genre: 'Novela', rating: 4, author: 'Miguel de Cervantes' },
+  ];
+
+  const handleBookPress = (book) => {
+    // Navega a la pantalla de detalles pasando los datos del libro
+    router.push({
+      pathname: '/screens/BookDetailScreen',
+      params: {
+        title: book.title,
+        author: book.author,
+        genre: book.genre,
+        rating: book.rating.toString(),
+      },
+    });
+  };
+
+  const renderBook = ({ item }: { item: typeof books[0] }) => (
+    <TouchableOpacity onPress={() => handleBookPress(item)}>
+      <View style={styles.bookItem}>
+        <Text style={styles.bookTitle}>{item.title}</Text>
+        <Text style={styles.bookMeta}>{item.genre} · ⭐{item.rating}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <Text style={styles.title}>Lista de Libros</Text>
+      <FlatList
+        data={books}
+        keyExtractor={item => item.id}
+        renderItem={renderBook}
+        ListEmptyComponent={<Text>No hay libros registrados.</Text>}
+        contentContainerStyle={books.length === 0 && { flex: 1, justifyContent: 'center' }}
+      />
+      <Button title="Agregar Libro" onPress={() => { /* Navega a BookFormScreen */ }} />
     </View>
   );
 }
@@ -16,16 +52,26 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  bookItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  bookTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  bookMeta: {
+    fontSize: 14,
+    color: '#666',
   },
 });
