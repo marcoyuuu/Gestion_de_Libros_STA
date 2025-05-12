@@ -6,6 +6,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
+
+// Importa el AuthProvider desde contexts para envolver toda la app
+import { AuthProvider } from '../contexts/AuthContext';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export {
@@ -42,7 +45,12 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  // Envuelve la navegación con AuthProvider para acceso global a la sesión
+  return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
+  );
 }
 
 function RootLayoutNav() {

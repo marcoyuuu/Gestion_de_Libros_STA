@@ -1,27 +1,46 @@
+
+/**
+ * @fileoverview
+ * Pantalla de login para la app de gestión de libros.
+ * Permite al usuario autenticarse mediante email y gestiona la sesión global.
+ */
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { login as loginApi } from '../../lib/api';
+import { useAuth } from '../../contexts/AuthContext';
 
-// Accepts onLogin prop to notify parent when login is successful
-type LoginScreenProps = {
-  onLogin: (email: string) => void;
-};
-
-export default function LoginScreen({ onLogin }: LoginScreenProps) {
+/**
+ * Componente funcional para la pantalla de login.
+ * Realiza validación, muestra errores y gestiona la sesión.
+ */
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login } = useAuth();
 
-  const handleLogin = () => {
+  /**
+   * Maneja el envío del formulario de login.
+   * Valida el email, llama a la API y guarda la sesión.
+   */
+  const handleLogin = async () => {
     setError('');
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       setError('Por favor, ingresa un correo válido.');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      // Llama a la API de login
+      const res = await loginApi(email);
+      // Guarda usuario en el contexto global
+      await login({ ...res, email });
+      // La navegación a la pantalla principal debe hacerse en el layout/app root
+    } catch (err: any) {
+      setError(err.message || 'Error al iniciar sesión');
+    } finally {
       setLoading(false);
-      onLogin(email); // Notify parent to proceed
-    }, 800);
+    }
   };
 
   return (
@@ -34,6 +53,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         style={styles.input}
         autoCapitalize="none"
         keyboardType="email-address"
+        editable={!loading}
       />
       <Button title="Continuar" onPress={handleLogin} disabled={loading} />
       {loading && <ActivityIndicator style={{ marginTop: 12 }} />}

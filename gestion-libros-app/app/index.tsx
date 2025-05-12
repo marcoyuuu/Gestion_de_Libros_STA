@@ -1,24 +1,30 @@
 // Entry point: Show LoginScreen first, then navigate to (tabs) after login
-import React, { useState } from 'react';
+/**
+ * @fileoverview
+ * Entry point: Muestra LoginScreen si no hay sesión, o navega a tabs si está logueado.
+ * El control de sesión se gestiona vía AuthContext.
+ */
+import React, { useEffect } from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import LoginScreen from './screens/LoginScreen';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AppEntry() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { user } = useAuth();
   const router = useRouter();
 
-  // When login is successful, navigate to the main tabs
-  const handleLogin = (email: string) => {
-    // Optionally store email (e.g., AsyncStorage)
-    setLoggedIn(true);
-    router.replace('/(tabs)'); // Replace so user can't go back to login
-  };
+  // Si hay usuario, navega automáticamente a tabs
+  useEffect(() => {
+    if (user) {
+      router.replace('/(tabs)');
+    }
+  }, [user]);
 
-  if (!loggedIn) {
-    return <LoginScreen onLogin={handleLogin} />;
+  if (!user) {
+    return <LoginScreen />;
   }
 
-  // Fallback (should not render)
+  // Fallback (pantalla de carga breve)
   return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><ActivityIndicator /></View>;
 }
