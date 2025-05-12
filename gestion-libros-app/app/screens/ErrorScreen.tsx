@@ -1,7 +1,12 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 
-export default function ErrorScreen({ message, onRetry }) {
+type ErrorScreenProps = {
+  message?: string;
+  onRetry?: () => void;
+};
+
+export default function ErrorScreen({ message, onRetry }: ErrorScreenProps) {
   return (
     <View>
       <Text>{message || 'Ocurrió un error'}</Text>

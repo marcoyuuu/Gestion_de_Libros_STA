@@ -12,7 +12,7 @@ export default function HomeScreen() {
     { id: '2', title: 'Don Quijote', genre: 'Novela', rating: 4, author: 'Miguel de Cervantes' },
   ];
 
-  const handleBookPress = (book) => {
+  const handleBookPress = (book: typeof books[0]) => {
     // Navega a la pantalla de detalles pasando los datos del libro
     router.push({
       pathname: '/screens/BookDetailScreen',

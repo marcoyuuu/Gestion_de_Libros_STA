@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 
-export default function BookFormScreen({ route }) {
+import { RouteProp } from '@react-navigation/native';
+
+type BookFormScreenProps = {
+  route: {
+    params?: {
+      book?: {
+        id: string;
+        title: string;
+        genre: string;
+        rating: number;
+        author: string;
+      };
+    };
+  };
+};
+
+export default function BookFormScreen({ route }: BookFormScreenProps) {
   // Si route.params.book existe, es modo edición
   const [title, setTitle] = useState('');
   const [genre, setGenre] = useState('');
