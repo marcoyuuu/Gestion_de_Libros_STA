@@ -2,7 +2,7 @@
 $emulatorPath = "C:\Users\Marco\AppData\Local\Android\Sdk\emulator\emulator.exe"
 $avdName = "Medium_Phone_API_36.0"
 $adbPath = "C:\Users\Marco\AppData\Local\Android\Sdk\platform-tools\adb.exe"
-$projectPath = "C:\Users\Marco\Projects\Gestion_de_Libros_STA_Code\Gestion_de_Libros_STA\gestion-libros-app"
+$projectPath = "C:\Users\Marco\Projects\Gestion_de_Libros_STA\gestion-libros-app"
 
 # Start emulator in background
 Start-Process -FilePath $emulatorPath -ArgumentList "-avd $avdName"
