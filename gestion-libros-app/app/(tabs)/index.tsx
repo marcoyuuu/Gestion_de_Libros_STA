@@ -1,24 +1,53 @@
 
 
 
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { useRouter } from 'expo-router';
-import { StyleSheet, View, FlatList, Button, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Button, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import axios from 'axios';
+import { getApiBaseUrl } from '../../lib/api';
 
 export default function HomeScreen() {
   const router = useRouter();
-  // books: array de libros (simulado)
-  const books = [
-    { id: '1', title: 'Cien Años de Soledad', genre: 'Realismo Mágico', rating: 5, author: 'Gabriel García Márquez' },
-    { id: '2', title: 'Don Quijote', genre: 'Novela', rating: 4, author: 'Miguel de Cervantes' },
-  ];
+  const [books, setBooks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  const fetchBooks = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await axios.get(`${getApiBaseUrl()}/libros`);
+      setBooks(res.data);
+      console.log('Libros obtenidos:', res.data);
+    } catch (err: any) {
+      if (err.response && Array.isArray(err.response.data) && err.response.data.length === 0) {
+        setBooks([]);
+        setError(null);
+      } else {
+        setError('No se pudo cargar la lista de libros. Intenta más tarde.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleBookPress = (book: typeof books[0]) => {
-    // Navega a la pantalla de detalles pasando el ID del libro
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchBooks();
+    }, [])
+  );
+
+  const handleBookPress = (book: any) => {
     router.push({
       pathname: '/screens/BookDetailScreen',
-      params: { id: book.id },
+      params: { id: book.id, title: book.titulo, author: book.autor?.nombre, genre: book.genero, rating: book.valoracion },
     });
   };
 
@@ -26,11 +55,11 @@ export default function HomeScreen() {
     router.push('/screens/BookFormScreen');
   };
 
-  const renderBook = ({ item }: { item: typeof books[0] }) => (
+  const renderBook = ({ item }: { item: any }) => (
     <TouchableOpacity onPress={() => handleBookPress(item)}>
       <View style={styles.bookItem}>
-        <Text style={styles.bookTitle}>{item.title}</Text>
-        <Text style={styles.bookMeta}>{item.genre} · ⭐{item.rating}</Text>
+        <Text style={styles.bookTitle}>{item.titulo}</Text>
+        <Text style={styles.bookMeta}>{item.genero} · ⭐{item.valoracion} · {item.autor?.nombre}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -38,13 +67,21 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Lista de Libros</Text>
-      <FlatList
-        data={books}
-        keyExtractor={item => item.id}
-        renderItem={renderBook}
-        ListEmptyComponent={<Text>No hay libros registrados.</Text>}
-        contentContainerStyle={books.length === 0 && { flex: 1, justifyContent: 'center' }}
-      />
+      {loading ? (
+        <ActivityIndicator style={{ marginTop: 32 }} />
+      ) : error ? (
+        <Text style={{ color: 'red', marginTop: 32, textAlign: 'center' }}>{error}</Text>
+      ) : books.length === 0 ? (
+        <Text style={{ color: '#888', marginTop: 32, textAlign: 'center', fontSize: 16 }}>
+          No hay libros registrados aún. ¡Agrega el primero!
+        </Text>
+      ) : (
+        <FlatList
+          data={books}
+          keyExtractor={item => item.id?.toString()}
+          renderItem={renderBook}
+        />
+      )}
       <Button title="Agregar Libro" onPress={handleAddBook} />
     </View>
   );

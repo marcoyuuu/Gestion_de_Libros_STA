@@ -29,8 +29,6 @@ export default function BookDetailScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Detalles del Libro</Text>
-      <Text style={styles.label}>ID:</Text>
-      <Text style={styles.value}>{id}</Text>
       <Text style={styles.label}>Título:</Text>
       <Text style={styles.value}>{title}</Text>
       <Text style={styles.label}>Autor:</Text>

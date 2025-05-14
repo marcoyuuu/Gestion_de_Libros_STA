@@ -16,6 +16,7 @@ const cors = require('cors');
 // Importa las rutas principales de la aplicación
 const librosRouter = require('./routes/libros');
 const loginRouter = require('./routes/login');
+const autoresRouter = require('./routes/autores');
 
 // Crea una instancia de la aplicación Express
 const app = express();
@@ -53,6 +54,7 @@ app.use(express.json());
 // Rutas principales
 app.use('/libros', librosRouter);
 app.use('/login', loginRouter);
+app.use('/autores', autoresRouter);
 
 // Middleware de manejo de errores global
 const errorHandler = require('./middleware/errorHandler');

@@ -45,14 +45,15 @@ describe('CRUD /libros', () => {
   let libroId;
 
   /**
-   * Debe devolver 404 si no hay libros en la base de datos.
+   * Debe devolver un array vacío si no hay libros en la base de datos.
    * @returns {void}
    */
-  it('GET /libros debe devolver 404 si no hay libros', async () => {
+  it('GET /libros debe devolver un array vacío si no hay libros', async () => {
     await prisma.libro.deleteMany();
     const res = await request(app).get('/libros');
-    expect(res.statusCode).toBe(404);
-    expect(res.body.error).toMatch(/no se encontraron/i);
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.length).toBe(0);
     const libro = await prisma.libro.create({
       data: {
         titulo: 'Libro temporal',

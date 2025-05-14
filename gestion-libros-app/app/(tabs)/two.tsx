@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router';
 export default function SettingsScreen() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const userNombre = user?.nombre || 'Nombre no disponible';
   const userEmail = user?.email || 'usuario@ejemplo.com';
 
   const handleLogout = async () => {
@@ -20,6 +21,10 @@ export default function SettingsScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Configuración</Text>
       <View style={styles.section}>
+      <View style={styles.section}>
+        <Text style={styles.label}>Nombre:</Text>
+        <Text style={styles.value}>{userNombre}</Text>
+      </View>
         <Text style={styles.label}>Email:</Text>
         <Text style={styles.value}>{userEmail}</Text>
       </View>
