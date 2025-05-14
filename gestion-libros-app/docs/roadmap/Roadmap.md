@@ -22,10 +22,10 @@
 ### Frontend
 - [x] Pantalla de login funcional
 - [x] Navegación entre screens
-- [ ] Pantalla principal (Home) con listado de libros (en progreso)
-- [ ] Pantalla de detalle de libro
-- [ ] Formulario para añadir/editar libros
-- [ ] Manejo de autenticación y contexto de usuario
+- [x] Pantalla principal (Home) con listado de libros (en progreso)
+- [x] Pantalla de detalle de libro
+- [x] Formulario para añadir/editar libros
+- [x] Manejo de autenticación y contexto de usuario
 
 ---
 

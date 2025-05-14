@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { View, Text, Button, Alert } from 'react-native';
+import axios from 'axios';
+import { getApiBaseUrl } from '../../lib/api';
 import { StyleSheet } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -14,7 +16,19 @@ export default function BookDetailScreen() {
   const handleDelete = () => {
     Alert.alert('¿Eliminar libro?', 'Esta acción no se puede deshacer.', [
       { text: 'Cancelar', style: 'cancel' },
-      { text: 'Eliminar', style: 'destructive', onPress: () => {/* Eliminar libro */} },
+      {
+        text: 'Eliminar',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await axios.delete(`${getApiBaseUrl()}/libros/${id}`);
+            router.replace('/(tabs)');
+          } catch (err) {
+            console.error('Error al eliminar libro:', err);
+            Alert.alert('Error', 'No se pudo eliminar el libro. Intenta de nuevo.');
+          }
+        },
+      },
     ]);
   };
 

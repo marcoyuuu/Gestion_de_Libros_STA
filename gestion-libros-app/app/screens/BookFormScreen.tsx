@@ -2,7 +2,7 @@
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
@@ -31,7 +31,12 @@ export default function BookFormScreen() {
         setTitle(libro.titulo || '');
         setGenre(libro.genero || '');
         setRating(libro.valoracion?.toString() || '');
-        setSelectedAutorId(libro.autorId?.toString() || (libro.autor?.id?.toString() || ''));
+        // Preferir autorId directo, si no existe usar autor.id
+        if (libro.autorId !== undefined && libro.autorId !== null) {
+          setSelectedAutorId(libro.autorId.toString());
+        } else if (libro.autor && libro.autor.id !== undefined && libro.autor.id !== null) {
+          setSelectedAutorId(libro.autor.id.toString());
+        }
       } catch (err) {
         console.error('Error al cargar libro:', err);
         alert('Error al cargar los datos del libro.');
@@ -77,6 +82,29 @@ export default function BookFormScreen() {
   }, []);
 
   const handleSubmit = async () => {
+  const handleDelete = async () => {
+    if (!isEdit || !params.id) return;
+    Alert.alert(
+      'Eliminar libro',
+      '¿Seguro que deseas eliminar este libro?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await axios.delete(`http://10.0.2.2:7000/libros/${params.id}`);
+              router.replace('/(tabs)');
+            } catch (err) {
+              console.error('Error al eliminar libro:', err);
+              alert('Error al eliminar el libro.');
+            }
+          },
+        },
+      ]
+    );
+  };
     try {
       const payload = {
         titulo: title,
@@ -145,6 +173,13 @@ export default function BookFormScreen() {
             </Picker>
           )}
           <Button title="Guardar" onPress={handleSubmit} />
+          {isEdit && (
+            <Button
+              title="Eliminar"
+              color="#d32f2f"
+              onPress={handleDelete}
+            />
+          )}
         </>
       )}
     </View>
