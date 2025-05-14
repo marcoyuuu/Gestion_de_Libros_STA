@@ -47,6 +47,18 @@ export function useAuth() {
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Carga usuario desde almacenamiento persistente al iniciar
+  React.useEffect(() => {
+    (async () => {
+      const stored = await AsyncStorage.getItem('user');
+      if (stored) {
+        setUser(JSON.parse(stored));
+      }
+      setLoading(false);
+    })();
+  }, []);
 
   /**
    * Guarda el usuario en el estado y almacenamiento persistente.
@@ -65,15 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await AsyncStorage.removeItem('user');
   };
 
-  // Carga usuario desde almacenamiento persistente al iniciar
-  React.useEffect(() => {
-    (async () => {
-      const stored = await AsyncStorage.getItem('user');
-      if (stored) {
-        setUser(JSON.parse(stored));
-      }
-    })();
-  }, []);
+  if (loading) {
+    // Puedes personalizar este loader según tu app
+    return null;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

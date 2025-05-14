@@ -17,8 +17,8 @@ export {
 } from 'expo-router';
 
 export const unstable_settings = {
-  // Set initial route to login screen (index.tsx), not tabs
-  initialRouteName: 'index',
+  // Set initial route to welcome screen
+  initialRouteName: 'welcome',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -59,12 +59,14 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* Login screen as entry point */}
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        {/* Welcome screen as entry point */}
+        <Stack.Screen name="welcome" options={{ headerShown: false }} />
+        {/* Login screen (moved to screens/login.tsx) */}
+        <Stack.Screen name="screens/login" options={{ headerShown: false }} />
         {/* Main app tabs */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         {/* Modal */}
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="modal" options={{ headerShown: false, presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
   );

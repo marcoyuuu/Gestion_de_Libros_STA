@@ -18,11 +18,11 @@ import { Platform } from 'react-native';
  * @returns {string} URL base del backend
  */
 /**
- * Dirección IP local detectada: 192.168.0.15
+ * Dirección IP local detectada: 192.168.0.1
  * Usa esta IP para pruebas en iPhone físico o Android físico.
  * Cambia este valor si tu IP local cambia.
  */
-const LOCAL_NETWORK_IP = '192.168.0.15';
+const LOCAL_NETWORK_IP = '192.168.0.8';
 
 /**
  * Obtiene la URL base del backend Express/Prisma según el entorno de ejecución.

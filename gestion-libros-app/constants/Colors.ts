@@ -6,7 +6,7 @@
 const colors = {
   greenDark: '#2B775E',    // Verde oscuro principal
   green: '#5ABD8C',        // Verde estándar
-  greenLight: '#AFDFC7',   // Verde claro
+  greenLight: '#A7F3D0',   // Verde claro (tailwind green-100)
   greenSuccess: '#4ADE80', // Verde para mensajes de éxito
   redAlert: '#F56C6C',     // Rojo para alertas o errores
   grayText: '#707070',     // Gris para texto principal
@@ -33,6 +33,8 @@ const theme = {
     success: colors.greenSuccess,  // Color para mensajes de éxito
     inputBorder: colors.greenLight,// Borde de inputs
     label: colors.grayText,        // Color de etiquetas
+    greenLight: colors.greenLight, // Verde claro para botones deshabilitados
+    grayMuted: colors.grayMuted,   // Gris para texto deshabilitado
   },
   dark: {
     text: colors.white,

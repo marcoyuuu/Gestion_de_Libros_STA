@@ -1,9 +1,15 @@
 
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
 
+import React from 'react';
+import { View, Text, StyleSheet, Image, ImageBackground, Linking } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'expo-router';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import theme from '../../constants/Colors';
+import colors from '../../constants/Colors';
+import { spacing } from '../../constants/Spacing';
+import { ButtonPrimary } from '../../components/ButtonPrimary';
+import { HeaderNoBack } from '../../components/HeaderNoBack';
 
 
 export default function SettingsScreen() {
@@ -14,49 +20,110 @@ export default function SettingsScreen() {
 
   const handleLogout = async () => {
     await logout();
-    router.replace('/login'); // Redirige explícitamente a la pantalla de login
+    router.replace('/login');
+  };
+
+  const handleEmailPress = () => {
+    Linking.openURL(`mailto:${userEmail}`);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Configuración</Text>
-      <View style={styles.section}>
-      <View style={styles.section}>
+    <ImageBackground
+      source={require('../../assets/images/background.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <HeaderNoBack title="Mi Cuenta" />
+      <View style={styles.content}>
+        <View style={styles.avatarContainer}>
+          <MaterialIcons name="account-circle" size={90} color="#222" />
+        </View>
         <Text style={styles.label}>Nombre:</Text>
         <Text style={styles.value}>{userNombre}</Text>
+        <Text style={styles.label}>Correo:</Text>
+        <Text style={[styles.value, styles.email]} onPress={handleEmailPress}>
+          {userEmail}
+        </Text>
+        <ButtonPrimary style={[styles.logoutBtn, { backgroundColor: '#d32f2f' }] }>
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', minHeight: 40 }}
+            onTouchEnd={handleLogout}
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar sesión"
+          >
+            <MaterialIcons name="logout" size={22} color={theme.light.background} style={{ marginRight: spacing.small, marginTop: -6 }} />
+            <Text style={{ color: theme.light.background, fontWeight: '400', fontSize: 20, fontFamily: 'Roboto', marginTop: -6 }}>Cerrar sesión</Text>
+          </View>
+        </ButtonPrimary>
+        <View style={styles.versionContainer}>
+          <Text style={styles.versionText}>Versión 1.0.0{"\n"}Book Manager</Text>
+          <Image source={require('../../assets/images/icon.png')} style={styles.versionIcon} />
+        </View>
       </View>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{userEmail}</Text>
-      </View>
-      <Button title="Cerrar sesión" color="#d32f2f" onPress={handleLogout} />
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    padding: 24,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 32,
-    textAlign: 'center',
-  },
-  section: {
-    marginBottom: 32,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    marginTop: 16,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
   },
   label: {
     fontSize: 16,
-    color: '#888',
+    color: '#7a7a7a',
+    marginTop: 12,
+    textAlign: 'center',
   },
   value: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    marginTop: 4,
+    marginTop: 2,
+    marginBottom: 2,
+    textAlign: 'center',
+    color: '#222',
+  },
+  email: {
+    color: '#0a0a0a',
+    textDecorationLine: 'underline',
+  },
+  logoutBtn: {
+    marginTop: 24,
+    marginBottom: 32,
+    alignSelf: 'center',
+    width: 220,
+  },
+  versionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    gap: 10,
+  },
+  versionText: {
+    fontSize: 15,
+    color: '#222',
+    textAlign: 'right',
+  },
+  versionIcon: {
+    width: 100,
+    height: 100,
+    marginLeft: 8,
   },
 });

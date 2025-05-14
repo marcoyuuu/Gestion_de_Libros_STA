@@ -69,8 +69,9 @@ export default function BookFormScreen() {
         }
         if (!autoresData) throw new Error('No se pudo obtener la lista de autores');
         setAutores(autoresData);
+        // Si ya hay un autor seleccionado (por edición), no sobrescribirlo
         if (autoresData.length > 0) {
-          setSelectedAutorId(autoresData[0].id.toString());
+          setSelectedAutorId(prev => prev && prev !== '' ? prev : autoresData[0].id.toString());
         }
       } catch (err: any) {
         setErrorAutores('Error al cargar autores');
@@ -81,7 +82,6 @@ export default function BookFormScreen() {
     fetchAutores();
   }, []);
 
-  const handleSubmit = async () => {
   const handleDelete = async () => {
     if (!isEdit || !params.id) return;
     Alert.alert(
@@ -105,6 +105,8 @@ export default function BookFormScreen() {
       ]
     );
   };
+
+  const handleSubmit = async () => {
     try {
       const payload = {
         titulo: title,

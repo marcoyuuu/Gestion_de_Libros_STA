@@ -2,12 +2,18 @@
 
 
 
+
 import React, { useEffect, useState } from 'react';
-import { useFocusEffect } from 'expo-router';
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, FlatList, Button, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { StyleSheet, View, FlatList, Text, TouchableOpacity, ActivityIndicator, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { getApiBaseUrl } from '../../lib/api';
+import { ButtonPrimary } from '../../components/ButtonPrimary';
+import { HeaderNoBack } from '../../components/HeaderNoBack';
+import theme from '../../constants/Colors';
+import { spacing } from '../../constants/Spacing';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -21,7 +27,6 @@ export default function HomeScreen() {
     try {
       const res = await axios.get(`${getApiBaseUrl()}/libros`);
       setBooks(res.data);
-      console.log('Libros obtenidos:', res.data);
     } catch (err: any) {
       if (err.response && Array.isArray(err.response.data) && err.response.data.length === 0) {
         setBooks([]);
@@ -56,60 +61,138 @@ export default function HomeScreen() {
   };
 
   const renderBook = ({ item }: { item: any }) => (
-    <TouchableOpacity onPress={() => handleBookPress(item)}>
-      <View style={styles.bookItem}>
+    <TouchableOpacity onPress={() => handleBookPress(item)} activeOpacity={0.85} style={styles.cardTouchable}>
+      <View style={styles.bookCard}>
         <Text style={styles.bookTitle}>{item.titulo}</Text>
-        <Text style={styles.bookMeta}>{item.genero} · ⭐{item.valoracion} · {item.autor?.nombre}</Text>
+        <Text style={styles.bookAuthor}>{item.autor?.nombre}</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Lista de Libros</Text>
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 32 }} />
-      ) : error ? (
-        <Text style={{ color: 'red', marginTop: 32, textAlign: 'center' }}>{error}</Text>
-      ) : books.length === 0 ? (
-        <Text style={{ color: '#888', marginTop: 32, textAlign: 'center', fontSize: 16 }}>
-          No hay libros registrados aún. ¡Agrega el primero!
-        </Text>
-      ) : (
-        <FlatList
-          data={books}
-          keyExtractor={item => item.id?.toString()}
-          renderItem={renderBook}
-        />
-      )}
-      <Button title="Agregar Libro" onPress={handleAddBook} />
-    </View>
+    <ImageBackground
+      source={require('../../assets/images/background.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <HeaderNoBack title="Mis Libros" />
+      <View style={styles.content}>
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: spacing.xl }} color={theme.light.tint} />
+        ) : error ? (
+          <Text style={styles.errorText}>{error}</Text>
+        ) : books.length === 0 ? (
+          <Text style={styles.emptyText}>
+            No hay libros registrados aún. ¡Agrega el primero!
+          </Text>
+        ) : (
+          <FlatList
+            data={books}
+            keyExtractor={item => item.id?.toString()}
+            renderItem={renderBook}
+            contentContainerStyle={{ paddingBottom: spacing.XXLHeight }}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+        <TouchableOpacity
+          style={styles.addButtonContainer}
+          onPress={handleAddBook}
+          activeOpacity={0.85}
+        >
+          <ButtonPrimary style={styles.addButton}>
+            <View style={styles.addButtonContent}>
+              <Ionicons name="add" size={24} color={theme.light.background} style={{ marginRight: spacing.small, marginTop: -6 }} />
+              <Text style={styles.addButtonText}>Añadir libro</Text>
+            </View>
+          </ButtonPrimary>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
+    width: '100%',
+    height: '100%',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
+  // header and headerTitle styles moved to HeaderNoBack
+  content: {
+    flex: 1,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.medium,
+    alignItems: 'stretch',
   },
-  bookItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+  cardTouchable: {
+    marginBottom: spacing.large,
+  },
+  bookCard: {
+    backgroundColor: theme.light.background,
+    borderRadius: spacing.small,
+    paddingVertical: spacing.mediumHeight,
+    paddingHorizontal: spacing.xl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 6,
+    elevation: 3,
+    marginBottom: 0,
   },
   bookTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    color: theme.light.text,
+    marginBottom: 2,
   },
-  bookMeta: {
-    fontSize: 14,
-    color: '#666',
+  bookAuthor: {
+    fontSize: 15,
+    color: theme.light.label,
+    fontWeight: '400',
+  },
+  errorText: {
+    color: theme.light.error,
+    marginTop: spacing.xl,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  emptyText: {
+    color: theme.light.grayMuted,
+    marginTop: spacing.xl,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  addButtonContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: spacing.largeHeight,
+    alignItems: 'center',
+    zIndex: 10,
+    paddingBottom: 0,
+  },
+  addButton: {
+    width: 240,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: spacing.mediumLargeHeight,
+    paddingVertical: spacing.medium,
+    paddingHorizontal: spacing.large,
+    justifyContent: 'center',
+  },
+  addButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  addButtonText: {
+    color: theme.light.background,
+    fontSize: 20,
+    fontWeight: '400',
+    fontFamily: 'Roboto',
+    marginTop: -6, // Sube el texto visualmente dentro del botón
   },
 });
