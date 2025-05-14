@@ -21,10 +21,8 @@ exports.getAllLibros = async (_req, res) => {
     // Simula error para tests
     if (_req.query.errorSimulate) throw new Error('Error simulado');
     const libros = await prisma.libro.findMany({ include: { autor: true } });
-    if (!libros || libros.length === 0) {
-      return res.status(404).json({ error: 'No se encontraron libros' });
-    }
-    res.json(libros); // Devuelve la lista de libros en formato JSON
+    // Siempre devolver 200 y un array (vacío o con libros)
+    res.json(libros);
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener los libros' });
   }
