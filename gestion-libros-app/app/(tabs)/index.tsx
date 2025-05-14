@@ -1,5 +1,6 @@
 
 
+
 import React from 'react';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, FlatList, Button, Text, TouchableOpacity } from 'react-native';
@@ -12,17 +13,17 @@ export default function HomeScreen() {
     { id: '2', title: 'Don Quijote', genre: 'Novela', rating: 4, author: 'Miguel de Cervantes' },
   ];
 
+
   const handleBookPress = (book: typeof books[0]) => {
-    // Navega a la pantalla de detalles pasando los datos del libro
+    // Navega a la pantalla de detalles pasando el ID del libro
     router.push({
       pathname: '/screens/BookDetailScreen',
-      params: {
-        title: book.title,
-        author: book.author,
-        genre: book.genre,
-        rating: book.rating.toString(),
-      },
+      params: { id: book.id },
     });
+  };
+
+  const handleAddBook = () => {
+    router.push('/screens/BookFormScreen');
   };
 
   const renderBook = ({ item }: { item: typeof books[0] }) => (
@@ -44,7 +45,7 @@ export default function HomeScreen() {
         ListEmptyComponent={<Text>No hay libros registrados.</Text>}
         contentContainerStyle={books.length === 0 && { flex: 1, justifyContent: 'center' }}
       />
-      <Button title="Agregar Libro" onPress={() => { /* Navega a BookFormScreen */ }} />
+      <Button title="Agregar Libro" onPress={handleAddBook} />
     </View>
   );
 }

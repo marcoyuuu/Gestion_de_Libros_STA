@@ -5,7 +5,6 @@
  */
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LoginResponse } from '../lib/api';
 
 /**
  * Tipo para el usuario autenticado.

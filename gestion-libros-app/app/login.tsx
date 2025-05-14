@@ -1,23 +1,28 @@
 
 /**
+/**
  * @fileoverview
  * Pantalla de login para la app de gestión de libros.
  * Permite al usuario autenticarse mediante email y gestiona la sesión global.
  */
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { login as loginApi } from '../../lib/api';
-import { useAuth } from '../../contexts/AuthContext';
+import { login as loginApi } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Componente funcional para la pantalla de login.
  * Realiza validación, muestra errores y gestiona la sesión.
  */
+
+import { useRouter } from 'expo-router';
+
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
+  const router = useRouter();
 
   /**
    * Maneja el envío del formulario de login.
@@ -35,7 +40,8 @@ export default function LoginScreen() {
       const res = await loginApi(email);
       // Guarda usuario en el contexto global
       await login({ ...res, email });
-      // La navegación a la pantalla principal debe hacerse en el layout/app root
+      // Redirige inmediatamente tras login exitoso
+      router.replace('/(tabs)');
     } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión');
     } finally {

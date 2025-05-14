@@ -1,12 +1,19 @@
+
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-export default function SettingsScreen() {
-  // Aquí podrías obtener el email del usuario autenticado
-  const userEmail = 'usuario@ejemplo.com'; // Simulado
+import { useAuth } from '../../contexts/AuthContext';
+import { useRouter } from 'expo-router';
 
-  const handleLogout = () => {
-    // Lógica para cerrar sesión
+
+export default function SettingsScreen() {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const userEmail = user?.email || 'usuario@ejemplo.com';
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace('/login'); // Redirige explícitamente a la pantalla de login
   };
 
   return (

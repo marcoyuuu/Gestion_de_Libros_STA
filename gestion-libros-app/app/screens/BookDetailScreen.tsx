@@ -1,11 +1,15 @@
+
 import React from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+
 
 export default function BookDetailScreen() {
   // Recibe los datos del libro por params
-  const { title, author, genre, rating } = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const router = useRouter();
+  const { id, title, author, genre, rating } = params;
 
   const handleDelete = () => {
     Alert.alert('¿Eliminar libro?', 'Esta acción no se puede deshacer.', [
@@ -14,9 +18,19 @@ export default function BookDetailScreen() {
     ]);
   };
 
+  const handleEdit = () => {
+    // Navega a BookFormScreen en modo edición, pasando el ID del libro
+    router.push({
+      pathname: '/screens/BookFormScreen',
+      params: { id },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Detalles del Libro</Text>
+      <Text style={styles.label}>ID:</Text>
+      <Text style={styles.value}>{id}</Text>
       <Text style={styles.label}>Título:</Text>
       <Text style={styles.value}>{title}</Text>
       <Text style={styles.label}>Autor:</Text>
@@ -25,7 +39,7 @@ export default function BookDetailScreen() {
       <Text style={styles.value}>{genre}</Text>
       <Text style={styles.label}>Rating:</Text>
       <Text style={styles.value}>{rating}</Text>
-      <Button title="Editar" onPress={() => { /* Navega a BookFormScreen modo edit */ }} />
+      <Button title="Editar" onPress={handleEdit} />
       <Button title="Eliminar" color="red" onPress={handleDelete} />
     </View>
   );
